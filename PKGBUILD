@@ -11,8 +11,8 @@ pkgbase="${_py}-${_pkg}"
 pkgname=(
   "${pkgbase}"
 )
-pkgver=0.9.5.1
-_commit="9efbb8f550dedb92424cec7d213e3c556d33cf96"
+pkgver=0.9.5.3
+_commit="de3c77f4e4a0817fe55a3970ff06f624bf7915d9"
 pkgrel=1
 _pkgdesc=(
   'Etherscan API async Python wrapper.'
@@ -60,7 +60,7 @@ sha256sum=(
   'a2010c4430264e359bb3c47315f38dfa94efda90c5cd6a6eac2d7010b78fe61e'
 )
 b2sums=(
-  'ef04d8bebe7428fb8df36e9173268cc162a5b9311f53134369e0d80b7d21f9889fb2ef5844a9075065a46d60dcad9d98a32de8fc013c015de6af5c5f92196526'
+  'e4a42368b46a7824d577f4ca716ece9ebdea50a8c44c2d1561d717e3e2f9b1814519d159793ba54622d2a6a542df2ff3b934f659454d54a2299b82c421bab84b'
 )
 
 build() {
