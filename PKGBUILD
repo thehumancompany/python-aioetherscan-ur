@@ -15,7 +15,7 @@ _pymajver="${_pyver%.*}"
 _pyminver="${_pymajver#*.}"
 _pynextver="${_pymajver%.*}.$(( \
   ${_pyminver} + 1))"
-_pkg="aioetherscan"
+_pkg=aioetherscan
 pkgbase="${_py}-${_pkg}"
 pkgname=(
   "${pkgbase}"
