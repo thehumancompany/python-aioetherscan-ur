@@ -20,8 +20,8 @@ pkgbase="${_py}-${_pkg}"
 pkgname=(
   "${pkgbase}"
 )
-pkgver=0.9.5.3
-_commit="de3c77f4e4a0817fe55a3970ff06f624bf7915d9"
+pkgver=0.9.6
+_commit="79cdaa85fda278f2abbe82132eacf93df572d6f0"
 pkgrel=1
 _pkgdesc=(
   'Etherscan API async Python wrapper.'
@@ -35,9 +35,10 @@ _ns="themartiancompany"
 _http="https://github.com"
 url="${_http}/${_ns}/${_pkg}"
 license=(
-  'MIT'
+  'AGPL3'
 )
 depends=(
+  "evm-chains-explorers"
   "${_py}>=${_pymajver}"
   "${_py}<${_pynextver}"
   "${_py}>=3.9"
@@ -65,7 +66,7 @@ conflicts=(
   "${_pkg}"
 )
 source=(
-  "${_pkg}-${_commit}::${url}/archive/${_commit}.zip"
+  "${_pkg}-${_commit}.zip::${url}/archive/${_commit}.zip"
   # "${url}/archive/v${pkgver}/${_pkg}-${pkgver}.tar.gz"
 )
 sha256sum=(
@@ -79,6 +80,7 @@ build() {
   cd \
     "${_pkg}-${_commit}"
   poetry \
+    -vvv \
     build
 }
 
