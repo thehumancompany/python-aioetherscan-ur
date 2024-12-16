@@ -89,6 +89,9 @@ b2sums=(
 build() {
   cd \
     "${_pkg}-${_commit}"
+  export \
+    POETRY_VIRTUALENVS_OPTIONS_SYSTEM_SITE_PACKAGES=true
+  POETRY_VIRTUALENVS_OPTIONS_SYSTEM_SITE_PACKAGES=true \
   poetry \
     -vvv \
     build
