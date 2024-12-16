@@ -65,6 +65,7 @@ provides=(
 )
 conflicts=(
   "${_pkg}"
+  "${_py}-eip3091"
 )
 source=(
   "${_pkg}-${_commit}.zip::${url}/archive/${_commit}.zip"
