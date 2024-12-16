@@ -28,7 +28,15 @@ _pkgdesc=(
 )
 pkgdesc="${_pkgdesc[*]}"
 arch=(
-  any
+  'x86_64'
+  'arm'
+  'aarch64'
+  'armv7l'
+  'armv6l'
+  'mips'
+  'powerpc'
+  'pentium4'
+  'i686'
 )
 # _ns="ape364"
 _ns="themartiancompany"
