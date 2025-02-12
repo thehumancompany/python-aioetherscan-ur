@@ -36,6 +36,7 @@ elif [[ "${_evmfs_available}" == "" ]]; then
 fi
 _setuptools="true"
 _poetry="false"
+_build="false"
 _py="python"
 _pyver="$( \
   "${_py}" \
@@ -90,12 +91,17 @@ makedepends=(
   "${_py}-wheel"
   "${_py}-setuptools"
 )
-if [[ "${_poetry}" == "true" ]]; then
+if [[ "${_poetry}" == "true" ]] || \
+   [[ "${_build}" == "true" ]]; then
   makedepends+=(
     "${_py}-build"
     "${_py}-installer"
-    "${_py}-poetry"
     "${_py}-poetry-core"
+  )
+fi
+if [[ "${_poetry}" == "true" ]]; then
+  makedepends+=(
+    "${_py}-poetry"
   )
 fi
 checkdepends=(
@@ -151,10 +157,10 @@ validpgpkeys=(
 
 _poetry_build() {
   export \
-    POETRY_VIRTUALENVS_CREATE=false \
     POETRY_VIRTUALENVS_OPTIONS_NO_PIP=true \
     POETRY_VIRTUALENVS_OPTIONS_SYSTEM_SITE_PACKAGES=true
-  POETRY_VIRTUALENVS_CREATE=false \
+    # POETRY_VIRTUALENVS_CREATE=false
+  # POETRY_VIRTUALENVS_CREATE=false \
   POETRY_VIRTUALENVS_OPTIONS_NO_PIP=true \
   POETRY_VIRTUALENVS_OPTIONS_SYSTEM_SITE_PACKAGES=true \
   poetry \
@@ -162,20 +168,30 @@ _poetry_build() {
     build
 }
 
+_build_build() {
+  "${_py}" \
+    -m \
+      build \
+    --wheel \
+    --no-isolation
+}
+
 build() {
   cd \
     "${_tarname}"
   if [[ "${_poetry}" == "true" ]]; then
     _poetry_build
+  elif [[ "${_build}" == "true" ]]; then
+    _build_build
   fi
 }
 
 _setuptools_package() {
   "${_py}" \
     setup.py \
-    install \
-    --root="${pkgdir}" \
-    --optimize=1
+      install \
+        --root="${pkgdir}" \
+        --optimize=1
 }
 
 _installer_package() {
@@ -191,7 +207,8 @@ package() {
     "${_tarname}"
   if [[ "${_setuptools}" == "true" ]]; then
     _setuptools_package
-  elif [[ "${_poetry}" == "true" ]]; then
+  elif [[ "${_poetry}" == "true" ]] || \
+       [[ "${_poetry}" == "true" ]]; then
     _installer_package
   fi
   install \
