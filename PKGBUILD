@@ -29,10 +29,12 @@ _evmfs_available="$( \
     -v \
     "evmfs" || \
     true)"
-if [[ "${_evmfs_available}" != "" ]]; then
-  _evmfs="true"
-elif [[ "${_evmfs_available}" == "" ]]; then
-  _evmfs="false"
+if [[ ! -v "_evmfs" ]]; then
+  if [[ "${_evmfs_available}" != "" ]]; then
+    _evmfs="true"
+  elif [[ "${_evmfs_available}" == "" ]]; then
+    _evmfs="false"
+  fi
 fi
 _setuptools="true"
 _poetry="false"
@@ -127,7 +129,7 @@ _evmfs_archive_src="${_tarname}.zip::${_evmfs_archive_uri}"
 _archive_sig_sum="1b77bbebc4e78b4a72891c0f4b56e66d115bcdf6c07484707d7f827a4c2c8443"
 _archive_sig_uri="evmfs://${_evmfs_network}/${_evmfs_address}/${_evmfs_ns}/${_archive_sig_sum}"
 _archive_sig_src="${_tarname}.zip.sig::${_archive_sig_uri}"
-if [[ "${_evmfs}" == true ]]; then
+if [[ "${_evmfs}" == "true" ]]; then
   makedepends+=(
     "evmfs"
   )
@@ -138,7 +140,7 @@ if [[ "${_evmfs}" == true ]]; then
   sha256sums+=(
     "${_archive_sig_sum}"
   )
-elif [[ "${_evmfs}" == true ]]; then
+elif [[ "${_evmfs}" == "false" ]]; then
   _src="${_tarname}.zip::${url}/archive/${_commit}.zip"
 fi
 source=(
