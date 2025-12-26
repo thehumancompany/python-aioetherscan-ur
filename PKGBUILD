@@ -123,6 +123,16 @@ makedepends=(
   "${_py}-wheel"
   "${_py}-setuptools"
 )
+if [[ "${_git}" == "true" ]]; then
+  makedepends+=(
+    "git"
+  )
+fi
+if [[ "${_evmfs}" == "true" ]]; then
+  makedepends+=(
+    "evmfs"
+  )
+fi
 if [[ "${_poetry}" == "true" ]] || \
    [[ "${_build}" == "true" ]]; then
   makedepends+=(
@@ -148,40 +158,62 @@ conflicts=(
   "${_pkg}"
   "${_py}-eip3091"
 )
+source=()
+sha256sums=()
+_url="${url}"
 _tag="${_commit}"
-_tarname="${_pkg}-${_tag}"
-_archive_sum='7a55511d466126a07ac33ac26b6fd3c82bef9ff5016d48dbb66d6522e9e0d489'
-_archive_sig_sum="1b77bbebc4e78b4a72891c0f4b56e66d115bcdf6c07484707d7f827a4c2c8443"
+_tag_name="commit"
+_tarname="${pkgname}-${_tag}"
+_tarfile="${_tarname}.${_archive_format}"
+if [[ "${_offline}" == "true" ]]; then
+  _url="file://${HOME}/${pkgname}"
+fi
+_sum='7a55511d466126a07ac33ac26b6fd3c82bef9ff5016d48dbb66d6522e9e0d489'
+_sig_sum="1b77bbebc4e78b4a72891c0f4b56e66d115bcdf6c07484707d7f827a4c2c8443"
+_github_sum="SKIP"
 # Dvorak
 _evmfs_ns="0x87003Bd6C074C713783df04f36517451fF34CBEf"
 _evmfs_network="100"
 _evmfs_address="0x69470b18f8b8b5f92b48f6199dcb147b4be96571"
-_evmfs_archive_uri="evmfs://${_evmfs_network}/${_evmfs_address}/${_evmfs_ns}/${_archive_sum}"
-_evmfs_archive_src="${_tarname}.zip::${_evmfs_archive_uri}"
-_archive_sig_uri="evmfs://${_evmfs_network}/${_evmfs_address}/${_evmfs_ns}/${_archive_sig_sum}"
-_archive_sig_src="${_tarname}.zip.sig::${_archive_sig_uri}"
+_evmfs_dir="evmfs://${_evmfs_network}/${_evmfs_address}/${_evmfs_ns}"
+_evmfs_uri="${_evmfs_dir}/${_sum}"
+_evmfs_src="${_tarfile}::${_evmfs_uri}"
+_sig_uri="${_evmfs_dir}/${_sig_sum}"
+_sig_src="${_tarfile}.sig::${_sig_uri}"
 if [[ "${_evmfs}" == "true" ]]; then
-  makedepends+=(
-    "evmfs"
-  )
-  _src="${_evmfs_archive_src}"
-  source+=(
-    "${_archive_sig_src}"
-  )
-  sha256sums+=(
-    "${_archive_sig_sum}"
-  )
+  if [[ "${_git}" == "false" ]]; then
+    _src="${_evmfs_src}"
+    source+=(
+      "${_sig_src}"
+    )
+    sha256sums+=(
+      "${_sig_sum}"
+    )
+  fi
 elif [[ "${_evmfs}" == "false" ]]; then
-  _src="${_tarname}.zip::${url}/archive/${_commit}.zip"
+  if [[ "${_git}" == true ]]; then
+    _src="${_tarname}::git+${_url}#${_tag_name}=${_tag}?signed"
+    _sum="SKIP"
+  elif [[ "${_git}" == false ]]; then
+    _uri=""
+    if [[ "${_git_service}" == "github" ]]; then
+      if [[ "${_tag_name}" == "commit" ]]; then
+        _uri="${_url}/archive/${_commit}.${_archive_format}"
+        _sum="${_github_sum}"
+      fi
+    elif [[ "${_git_service}" == "gitlab" ]]; then
+      if [[ "${_tag_name}" == "commit" ]]; then
+        _uri="${_url}/-/archive/${_tag}/${_tag}.${_archive_format}"
+      fi
+    fi
+    _src="${_tarfile}::${_uri}"
+  fi
 fi
-source=(
+source+=(
   "${_src}"
 )
-sha256sums=(
-  "${_archive_sum}"
-)
-b2sums=(
-  'd9076f256ee36cc9a5e06e27c19c032694aca8dee834f86e42f9af2098e1847c5b9df548bb6103db2ae8f4c2e4d92a8b17fa3ec668607134a0f40d85de3825a3'
+sha256sums+=(
+  "${_sum}"
 )
 validpgpkeys=(
   # Truocolo
