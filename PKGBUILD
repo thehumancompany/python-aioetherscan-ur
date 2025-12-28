@@ -74,7 +74,8 @@ _pyver="$(
   "${_py}" \
     -V | \
     awk \
-      '{print $2}')"
+      '{print $2}' || \
+  true)"
 _pymajver="${_pyver%.*}"
 _pyminver="${_pymajver#*.}"
 _pynextver="${_pymajver%.*}.$(( \
@@ -109,10 +110,20 @@ url="${_http}/${_ns}/${_pkg}"
 license=(
   'AGPL3'
 )
-depends=(
-  "evm-chains-explorers"
+depends=()
+_py_depends="${_py}"
+if [[ "${_pyver}" != "" ]]; then
+  depends+=(
   "${_py}>=${_pymajver}"
   "${_py}<${_pynextver}"
+  )
+elif [[ "${_pyver}" == "" ]]; then
+  depends+=(
+    "${_py}"
+  )
+fi
+depends+=(
+  "evm-chains-explorers"
   "${_py}>=3.9"
   "${_py}-aiohttp>=3.4"
   "${_py}-asyncio-throttle>=1.0.1"
@@ -120,6 +131,7 @@ depends=(
 )
 makedepends=(
   "cython"
+  "${_py}"
   "${_py}-wheel"
   "${_py}-setuptools"
 )
