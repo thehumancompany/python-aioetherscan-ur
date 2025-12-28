@@ -200,7 +200,7 @@ _requirements() {
     "${_commit}"
   mv \
     "${HOME}/${_name}-${_commit}.tar.gz" \
-    "/home/user/${_pkgname}/${_pkgname}-${_commit}.tar.gz"
+    "/home/user/${_pkgname}"
 }
 
 _build() {
